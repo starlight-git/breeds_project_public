@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model prisma_migrations_bk {
+  id                  String    @id @db.VarChar(36)
+  checksum            String    @db.VarChar(64)
+  finished_at         DateTime? @db.Timestamptz(6)
+  migration_name      String    @db.VarChar(255)
+  logs                String?
+  rolled_back_at      DateTime? @db.Timestamptz(6)
+  started_at          DateTime  @default(now()) @db.Timestamptz(6)
+  applied_steps_count Int       @default(0)
+
+  @@map("_prisma_migrations_bk")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model favorite_breeds_bk {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  memo       String?
+  breeds_id  String?  @unique(map: "favorite_breeds_bk_breeds_id_idx")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model inquiry_bk {
+  id        Int      @id
+  name      String
+  email     String
+  subject   String
+  message   String
+  createdAt DateTime @default(now())
+}
