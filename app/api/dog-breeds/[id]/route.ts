@@ -9,6 +9,9 @@ type Params = {
   };
 };
 
+//vercel depoly
+export const dynamic = "force-dynamic"
+
 export async function GET(request: NextRequest, context: Params) {
   const { id } = context.params;
 
