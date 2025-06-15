@@ -2,23 +2,30 @@ import { NextRequest, NextResponse } from 'next/server';
 import * as DogBreedService from '@/services/dogBreedsService';
 import { DogBreedsById } from '@/types/DogBreed';
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-    const { id } = params;
+// Use official type for route parameters
+type Params = {
+  params: {
+    id: string;
+  };
+};
 
-    if (!id) {
-        return NextResponse.json({ message: 'ID is required' }, { status: 400 });
+export async function GET(request: NextRequest, context: Params) {
+  const { id } = context.params;
+
+  if (!id) {
+    return NextResponse.json({ message: 'ID is required' }, { status: 400 });
+  }
+
+  try {
+    const breed: DogBreedsById = await DogBreedService.fetchDogBreedById(id);
+
+    if (!breed) {
+      return NextResponse.json({ message: 'Breed not found' }, { status: 404 });
     }
 
-    try {
-        const breed: DogBreedsById = await DogBreedService.fetchDogBreedById(id);
-
-        if (!breed) {
-            return NextResponse.json({ message: 'Breed not found' }, { status: 404 });
-        }
-
-        return NextResponse.json(breed);
-    } catch (err) {
-        console.error('❌ Failed to fetch dog breed by ID:', err);
-        return NextResponse.json({ message: 'Server Error' }, { status: 500 });
-    }
+    return NextResponse.json(breed);
+  } catch (error) {
+    console.error('❌ Failed to fetch dog breed by ID:', error);
+    return NextResponse.json({ message: 'Server Error' }, { status: 500 });
+  }
 }
